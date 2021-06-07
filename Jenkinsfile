@@ -22,45 +22,12 @@ pipeline {
             }
             
         }
-        
-        
-        // Building Docker images
-        stage('Building image') {
-          steps{
-            script {
-                sh "pwd"
-                echo "Inicia Build" 
-                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${registry}'
-					sh 'docker build -t ${registry}/${repository_image}:${BUILD_NUMBER} .'
-          
-            }
-          }
-        }
-        
-        // Uploading Docker images into AWS ECR
-        stage('Pushing to ECR') {
-         steps{  
-             script {
-                      sh '''
-                      docker push ${registry}/${repository_image}:${BUILD_NUMBER}
-                      '''
-             }
-            }
-        }
 
-
-        stage('stop previous containers') {
-         steps {
-            sh 'docker ps -f name=${container_name} -q | xargs --no-run-if-empty docker container stop'
-            sh 'docker container ls -a -fname=${container_name} -q | xargs -r docker container rm'
-         }
-       }
-
-        stage('Docker Run') {
+         stage ('Kubectl version') {
             steps{
-                script {
-                        sh 'docker run -p 8082:80 -d  --name=${container_name} ${registry}/${repository_image}:${BUILD_NUMBER}'
-                    }
+                script {                    
+                    sh "kubectl version"    
+                }
             }
         }
 
