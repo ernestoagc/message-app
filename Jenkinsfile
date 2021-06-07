@@ -64,9 +64,9 @@ pipeline {
             }
         }
 
-     
-
-
+        stage ('K8S Deploy') {
+            kubernetesDeploy(configs: 'deployment-frontend.yaml',kubeconfigId: 'K8S',enableConfigSubstitution: true)           
+        }
 
     }
 }
