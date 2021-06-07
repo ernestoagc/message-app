@@ -1,0 +1,20 @@
+<table class="table table-primary table-striped">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">To</th>
+        <th scope="col">From</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Body</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr  *ngFor="let item of messageList">
+        <th scope="row">  {{item.id}}</th>
+        <td>  {{item.to}}</td>
+        <td>  {{item.from}}</td>
+        <td>  {{item.subject}}</td>
+        <td>  {{item.body}}</td>
+      </tr> 
+    </tbody>
+  </table>

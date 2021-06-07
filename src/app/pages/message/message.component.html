@@ -1,0 +1,25 @@
+
+<app-navbar></app-navbar>
+
+<div class="container">
+    <div class="row mb-2">
+
+      
+    </div>
+
+    <div class="row">
+        <div class="col-4">
+
+          <div class="row mb-2">
+            <app-file (newMessage)="saveSuccess($event)" ></app-file>
+          </div>
+          <div class="row">
+            <app-detail (newMessage)="saveSuccess($event)"  ></app-detail>
+          </div>
+          
+        </div>
+        <div class="col-8">
+            <app-list [messageList]="messageList"></app-list>
+        </div>
+      </div>   
+  </div>
