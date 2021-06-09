@@ -22,7 +22,7 @@ spec:
         app: onlock-front
     spec:
       containers:
-      - image: 880382163732.dkr.ecr.us-east-1.amazonaws.com/onlock-app:6 #CHANGE
+      - image: 880382163732.dkr.ecr.us-east-1.amazonaws.com/onlock-app:tagVersion #CHANGE
         imagePullPolicy: IfNotPresent
         name: onlock-front
       restartPolicy: Always
