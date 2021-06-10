@@ -5,9 +5,10 @@ pipeline {
         jdk 'Java'
     }
     environment {
-        registry = "880382163732.dkr.ecr.us-east-1.amazonaws.com"
+        ecr_registry = "880382163732.dkr.ecr.us-east-1.amazonaws.com"
+		ecr_cred ="us-east-1:ecr-jenkins"
+		k8s_host_remote ="ubuntu@12.0.133.16"
         repository_image="onlock-app"
-        container_name="message-app"
     }
 
     stages {       
@@ -24,26 +25,17 @@ pipeline {
         }
         
         
-        // Building Docker images
-        stage('Building image') {
-          steps{
-            script {
-                sh "pwd"
-                echo "Inicia Build" 
-                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${registry}'
-					sh 'docker build -t ${registry}/${repository_image}:${BUILD_NUMBER} .'
-          
-            }
-          }
-        }
         
         // Uploading Docker images into AWS ECR
-        stage('Pushing to ECR') {
+         stage('Pushing to ECR') {
          steps{  
              script {
-                      sh '''
-                      docker push ${registry}/${repository_image}:${BUILD_NUMBER}
-                      '''
+						docker.withRegistry(
+						"https://${ecr_registry}/${repository_image}",
+						"ecr:${ecr_cred}"){
+						def myImage = docker.build("${repository_image}")
+        				   myImage.push("${BUILD_NUMBER}")
+						}
              }
             }
         }
@@ -51,19 +43,24 @@ pipeline {
 
         stage ('K8S Deploy') {
           steps{
-                script {     
+
+                def application_image =  "${ecr_registry}/${repository_image}:${BUILD_NUMBER}"
+                
+                script {    
+                    echo "application_image" 
+                    echo "${application_image}" 
                     sh "pwd"
                    sh "whoami" 
                     echo "Updating image version in deployment file"
                     sh "chmod +x changeTag.sh" 
-                    sh "./changeTag.sh ${BUILD_NUMBER}" 
+                    sh "./changeTag.sh ${application_image}" 
                 }
                 
                 sshagent(['k8s-ubuntu']) {
-                    sh "scp -oStrictHostKeyChecking=no deployment-frontend.yaml ubuntu@12.0.133.16:/home/ubuntu/"
+                    sh "scp -oStrictHostKeyChecking=no deployment-frontend.yaml ${k8s_host_remote}:/home/ubuntu/"
                     echo "ejecuto bien remoto"
-                    sh "ssh ubuntu@12.0.133.16 pwd"
-                    sh "ssh ubuntu@12.0.133.16 kubectl apply -f deployment-frontend.yaml"
+                    sh "ssh ${k8s_host_remote} pwd"
+                    sh "ssh ${k8s_host_remote} kubectl apply -f deployment-frontend.yaml"
                 }
             }
         }

@@ -1,2 +1,2 @@
 #!/bin/bash
-sed "s/tagVersion/$1/g" deployment.yaml > deployment-frontend.yaml
+sed "s/DOCKER_APPLICATION_IMAGE/$1/g" deployment.yaml > deployment-frontend.yaml
