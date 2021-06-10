@@ -44,16 +44,11 @@ pipeline {
         stage ('K8S Deploy') {
           steps{
 
-               // def application_image =  "${ecr_registry}/${repository_image}:${BUILD_NUMBER}"
-                
-                script {    
-                    //echo "application_image" 
-                    //echo "${application_image}" 
+                script {     
                     sh "pwd"
-                   sh "whoami" 
                     echo "Updating image version in deployment file"
                     sh "chmod +x changeTag.sh" 
-                    sh "./changeTag.sh ${ecr_registry}/${repository_image}:${BUILD_NUMBER}" 
+                    sh "./changeTag.sh ${BUILD_NUMBER}" 
                 }
                 
                 sshagent(['k8s-ubuntu']) {
