@@ -3,7 +3,7 @@ WORKDIR /app
 COPY package.json ./
 RUN npm install
 COPY . .
-RUN npm run build --prod --base-href=/message/
+RUN npm run build --configuration=production --base-href=/message/
 
 FROM nginx:1.17.1-alpine AS prod-stage
 RUN rm -rf /usr/share/nginx/html/* && rm -rf /etc/nginx/nginx.conf
