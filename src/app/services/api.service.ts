@@ -2,14 +2,16 @@ import { HttpClient, HttpHeaders,HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {map, catchError} from 'rxjs/operators'
 import { of, Observable, throwError } from 'rxjs';
-
+import { environment } from 'src/environments/environment';
 import{Message} from '../model/model.index'
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
 
-  private urlEndPoint:string="https://messageangular.herokuapp.com/message/";
+  //private urlEndPoint:string="https://messageangular.herokuapp.com/message/";
+  private urlEndPoint:string= `${environment.API_ENDPOINT}/message/`;
+  //environment
   //private urlEndPoint:string="http://localhost:8600/message/";
   private httpHeaders:HttpHeaders = new HttpHeaders({'Content-Type':'application/json'});
  
